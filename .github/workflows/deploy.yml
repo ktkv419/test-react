@@ -1,29 +1,42 @@
-name: Deploy to GitHub Pages
+name: Deploy Vite app to GitHub Pages
 
 on:
   push:
-    branches: [ wip ]
+    branches: [ wip ]   # change if your default branch is different
 
 permissions:
-  contents: write    # 👈 gives GITHUB_TOKEN push access
+  contents: read
+  pages: write
+  id-token: write
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: react-project
+        working-directory: react-project   # <-- run npm & build inside react-project
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
+      - name: Checkout repo
+        uses: actions/checkout@v4
 
-      - run: npm ci
-      - run: npm run build
-
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: react-project/dist
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Ensure SPA fallback
+        run: cp -f dist/index.html dist/404.html
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v1
+        with:
+          path: ./dist
+
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v1
