@@ -1,39 +1,27 @@
-name: Deploy React App to GitHub Pages
+name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [ wip ]  # Triggers on pushes to your main branch
-  pull_request:
     branches: [ wip ]
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
     
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-      
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
       with:
-        node-version: '18'
-        cache: 'npm'
-        cache-dependency-path: './react-project/package-lock.json'
-        
-    - name: Install dependencies
-      run: |
-        cd react-project
-        npm ci
-        
-    - name: Build project
-      run: |
-        cd react-project
+        node-version: 20
+    - run: |
+        cd test-react
+        npm install
         npm run build
-        
-    - name: Deploy to GitHub Pages
-      uses: peaceiris/actions-gh-pages@v3
-      if: github.ref == 'refs/heads/wip'
+    - uses: actions/upload-pages-artifact@v2
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./react-project/build
+        path: ./react-project/dist
+    - uses: actions/deploy-pages@v2
