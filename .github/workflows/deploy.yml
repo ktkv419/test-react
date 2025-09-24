@@ -21,7 +21,7 @@ jobs:
         cd test-react
         npm install
         npm run build
-    - uses: actions/upload-pages-artifact@v2
+    - uses: actions/upload-pages-artifact@v4
       with:
         path: ./react-project/dist
     - uses: actions/deploy-pages@v2
