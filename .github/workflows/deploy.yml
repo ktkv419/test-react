@@ -2,7 +2,7 @@ name: Deploy React App to GitHub Pages
 
 on:
   push:
-    branches: [ wip ]  # Triggers on pushes to your main branch
+    branches: [ wip ]
   pull_request:
     branches: [ wip ]
 
@@ -18,13 +18,12 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: '18'
-        cache: 'npm'
-        cache-dependency-path: './test-react/package-lock.json'
+        # Remove cache temporarily
         
     - name: Install dependencies
       run: |
         cd test-react
-        npm ci
+        npm install
         
     - name: Build project
       run: |
