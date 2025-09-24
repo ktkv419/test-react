@@ -2,11 +2,14 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [ wip ]  # or your default branch
+    branches: [ main ]  # or your default branch
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: react-project   # 👈 run all steps inside /frontend
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -20,4 +23,4 @@ jobs:
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
+          publish_dir: react-project/dist  # 👈 tell Pages where to find built files
